@@ -1,2 +1,5 @@
 libs/
 libs
+keystore
+truststore
+site-docs
