@@ -4,5 +4,7 @@ Apache Kafka 3.8.0 authentication and authorisation using SCRAM-SHA-512 mechanis
 
 ## Run Shell Script
 
+```cmd
 chmod +x run.sh
 ./run.sh
+```
