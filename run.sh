@@ -10,6 +10,8 @@ SERVER_PROPERTIES="config/server.properties"
 git checkout $SERVER_PROPERTIES
 rm -rf $DIR $KAFKA_SERVER_JAAS $SSL_USER_CONFIG keystore truststore
 
+export KAFKA_HEAP_OPTS="-Xmx256M -Xms128M"
+
 if [ -d "$DIR" ]; then
   echo 'Directory '$DIR' exists.'
 else

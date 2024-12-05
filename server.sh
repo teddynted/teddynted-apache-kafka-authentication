@@ -11,7 +11,7 @@ bin/kafka-server-start.sh config/server.properties
 bin/connect-standalone.sh config/connect-standalone.properties
 
 # Create a topic "testtopic"
-bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 3 --topic testtopic
+bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists
 
 # Command to check for the list of topics
 bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
