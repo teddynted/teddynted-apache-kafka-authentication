@@ -60,10 +60,6 @@ ssl.key.password=$PASSWORD
 EOF
 fi
 
-# sudo sed -i 's/\#advertised.listeners=PLAINTEXT:\/\/your.host.name:9092/advertised.listeners=PLAINTEXT:\/\/'$HOSTNAME':9092,SASL_PLAINTEXT:\/\/'$HOSTNAME':9093,SASL_SSL:\/\/'$HOSTNAME':9094/g' $SERVER_PROPERTIES
-
-# sudo sed -i 's/\#listeners=PLAINTEXT:\/\/:9092/listeners=PLAINTEXT:\/\/'$HOSTNAME':9092,SASL_PLAINTEXT:\/\/'$HOSTNAME':9093,SASL_SSL:\/\/'$HOSTNAME':9094/g' $SERVER_PROPERTIES
-
 sudo cat <<EOF > $SERVER_PROPERTIES
 # Accept SASL_SSL-encrypted connections from clients and other brokers
 listeners=PLAINTEXT://$HOSTNAME:9092,SASL_PLAINTEXT://$HOSTNAME:9093, SASL_SSL://$HOSTNAME:9094
