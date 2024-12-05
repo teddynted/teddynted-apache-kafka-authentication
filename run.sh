@@ -1,13 +1,13 @@
 #!/bin/bash
 
-HOSTNAME='localhost'
+HOST_NAME='localhost'
 PASSWORD='!P@ssw0rd123'
 USERNAME='@dm1n'
 DIR="config/kafka-ssl"
 KAFKA_SERVER_JAAS="config/kafka_server_jaas.conf"
 SSL_USER_CONFIG="config/ssl-user-config.properties"
 SERVER_PROPERTIES="config/server.properties"
-git checkout SERVER_PROPERTIES="config/server.properties"
+git checkout $SERVER_PROPERTIES
 rm -rf $DIR $KAFKA_SERVER_JAAS $SSL_USER_CONFIG keystore truststore
 
 if [ -d "$DIR" ]; then
@@ -22,7 +22,7 @@ else
   export PASSWORD=$PASSWORD
   chmod +x config/kafka-ssl/kafka-generate-ssl-automatic.sh
   ./config/kafka-ssl/kafka-generate-ssl-automatic.sh
-  keytool -list -keystore keystore/kafka.keystore.jks
+  #keytool -list -keystore keystore/kafka.keystore.jks
 fi
 
 if [ -e "$KAFKA_SERVER_JAAS" ]; then
@@ -60,10 +60,11 @@ ssl.key.password=$PASSWORD
 EOF
 fi
 
-sudo cat <<EOF > $SERVER_PROPERTIES
+echo $SERVER_PROPERTIES
+sudo sh -c 'cat << EOF >> '$SERVER_PROPERTIES'
 # Accept SASL_SSL-encrypted connections from clients and other brokers
-listeners=PLAINTEXT://$HOSTNAME:9092,SASL_PLAINTEXT://$HOSTNAME:9093, SASL_SSL://$HOSTNAME:9094
-advertised.listeners=PLAINTEXT://$HOSTNAME:9092,SASL_PLAINTEXT://$HOSTNAME:9093, SASL_SSL://$HOSTNAME:9094
+listeners=PLAINTEXT://'$HOST_NAME':9092,SASL_PLAINTEXT://'$HOST_NAME':9093, SASL_SSL://'$HOST_NAME':9094
+advertised.listeners=PLAINTEXT://'$HOST_NAME':9092,SASL_PLAINTEXT://'$HOST_NAME':9093, SASL_SSL://'$HOST_NAME':9094
 # Specify the SASL mechanism
 sasl.mechanism.inter.broker.protocol=SCRAM-SHA-512
 sasl.enabled.mechanisms=SCRAM-SHA-512
@@ -75,4 +76,4 @@ ssl.truststore.location=truststore/apache.truststore.jks
 ssl.truststore.password=$PASSWORD
 # Client authentication is required for SASL_SSL
 ssl.client.auth=required
-EOF
+EOF'
