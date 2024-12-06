@@ -24,7 +24,6 @@ else
   export PASSWORD=$PASSWORD
   chmod +x config/kafka-ssl/kafka-generate-ssl-automatic.sh
   ./config/kafka-ssl/kafka-generate-ssl-automatic.sh
-  #keytool -list -keystore keystore/kafka.keystore.jks
 fi
 
 if [ -e "$KAFKA_SERVER_JAAS" ]; then
@@ -34,7 +33,7 @@ else
     sudo cat <<EOF > $KAFKA_SERVER_JAAS
 KafkaServer {
    org.apache.kafka.common.security.scram.ScramLoginModule required 
-   username="admin"
+   username="$USERNAME"
    password="$PASSWORD";
 };
 EOF
@@ -53,10 +52,10 @@ sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule require
   username="$USERNAME" \
   password="$PASSWORD";
 # Truststore configuration for clients
-ssl.truststore.location=truststore/apache.truststore.jks
+ssl.truststore.location=truststore/kafka.truststore.jks
 ssl.truststore.password=$PASSWORD
 # Keystore configuration for client authentication
-ssl.keystore.location=keystore/apache.keystore.jks
+ssl.keystore.location=keystore/kafka.keystore.jks
 ssl.keystore.password=$PASSWORD
 ssl.key.password=$PASSWORD
 EOF
@@ -71,11 +70,15 @@ advertised.listeners=PLAINTEXT://'$HOST_NAME':9092,SASL_PLAINTEXT://'$HOST_NAME'
 sasl.mechanism.inter.broker.protocol=SCRAM-SHA-512
 sasl.enabled.mechanisms=SCRAM-SHA-512
 # Configure Keystore and Truststore for brokers
-ssl.keystore.location=keystore/apache.keystore.jks
-ssl.keystore.password=$PASSWORD
-ssl.key.password=$PASSWORD
-ssl.truststore.location=truststore/apache.truststore.jks
-ssl.truststore.password=$PASSWORD
+ssl.keystore.location=keystore/kafka.keystore.jks
+ssl.keystore.password='$PASSWORD'
+ssl.key.password='$PASSWORD'
+ssl.truststore.location=truststore/kafka.truststore.jks
+ssl.truststore.password='$PASSWORD'
 # Client authentication is required for SASL_SSL
 ssl.client.auth=required
 EOF'
+
+export KAFKA_OPTS=-Djava.security.auth.login.config=$KAFKA_SERVER_JAAS
+echo $KAFKA_OPTS
+./bin/kafka-server-start.sh config/server.properties
